@@ -45,7 +45,7 @@ func (p *progressWriter) Write(b []byte) (int, error) {
 
 const updateFilename = "bedrocktool-update.bin"
 
-const githubLatestReleaseURL = "https://api.github.com/repos/bedrock-tool/bedrocktool/releases/latest"
+const githubLatestReleaseURL = "https://api.github.com/repos/RyzeMCBE/bedrocktool/releases/latest"
 
 func fetchHttp(url string) (io.ReadCloser, int, error) {
 	req, err := http.NewRequest("GET", url, nil)
@@ -225,7 +225,7 @@ func latestUpdate() (*Update, error) {
 		return nil, err
 	}
 
-	version := strings.TrimPrefix(release.TagName, "r")
+	version := strings.TrimPrefix(strings.TrimPrefix(release.TagName, "r"), "v")
 	assetPrefix := fmt.Sprintf("%s-%s-%s-", utils.CmdName, runtime.GOOS, runtime.GOARCH)
 	assetSuffix := ""
 	if runtime.GOOS == "windows" {
