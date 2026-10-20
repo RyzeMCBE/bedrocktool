@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -14,6 +15,7 @@ import (
 	"github.com/bedrock-tool/bedrocktool/utils/auth"
 	"github.com/bedrock-tool/bedrocktool/utils/commands"
 	"github.com/bedrock-tool/bedrocktool/utils/updater"
+	minecraftauth "github.com/sandertv/gophertunnel/minecraft/auth"
 	"github.com/sirupsen/logrus"
 )
 
@@ -26,6 +28,10 @@ func (c *CLI) Init() error {
 	return nil
 }
 
+func newCLIAuthHandler(output io.Writer) minecraftauth.AuthCodeHandler {
+	return minecraftauth.CliAuthCodeHandler{Writer: output}
+}
+
 func printCommands() {
 	fmt.Println(locale.Loc("available_commands", nil))
 	for name, cmd := range commands.Registered {
@@ -34,7 +40,7 @@ func printCommands() {
 }
 
 func (c *CLI) Start(ctx context.Context, cancel context.CancelCauseFunc) error {
-	auth.Auth.SetHandler(nil)
+	auth.Auth.SetHandler(newCLIAuthHandler(os.Stdout))
 	if !utils.IsDebug() {
 		go updater.CheckUpdate()
 	}
