@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -47,6 +48,13 @@ const updateFilename = "bedrocktool-update.bin"
 
 const githubLatestReleaseURL = "https://api.github.com/repos/RyzeMCBE/bedrocktool/releases/latest"
 
+// ErrNoPublishedRelease indicates that this fork has not published a release yet.
+var ErrNoPublishedRelease = errors.New("no RyzeMCBE BedrockTool release has been published yet")
+
+func isMissingForkRelease(url string, status int) bool {
+	return url == githubLatestReleaseURL && status == http.StatusNotFound
+}
+
 func fetchHttp(url string) (io.ReadCloser, int, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -57,7 +65,11 @@ func fetchHttp(url string) (io.ReadCloser, int, error) {
 		return nil, 0, err
 	}
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
+		resp.Body.Close()
+		if isMissingForkRelease(url, resp.StatusCode) {
+			return nil, 0, ErrNoPublishedRelease
+		}
 		return nil, 0, fmt.Errorf("bad http status from %s: %v", url, resp.Status)
 	}
 	return resp.Body, int(resp.ContentLength), nil
@@ -80,7 +92,7 @@ func CheckUpdate() {
 		}
 		return nil
 	}()
-	if err != nil {
+	if err != nil && !errors.Is(err, ErrNoPublishedRelease) {
 		logrus.Error(err)
 	}
 }
