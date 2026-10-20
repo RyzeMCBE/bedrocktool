@@ -28,9 +28,9 @@ jobs:
           go-version: '1.26.x'
           cache: true
       - name: Verify authentication and CLI
-        run: go test -count=1 ./ui/cli ./utils/auth
+        run: go test -count=1 ./ui/cli ./utils/auth ./utils/updater
       - name: Static analysis for authentication packages
-        run: go vet ./ui/cli ./utils/auth
+        run: go vet ./ui/cli ./utils/auth ./utils/updater
 
   build-cli:
     name: CLI ${{ matrix.goos }}/${{ matrix.goarch }}
