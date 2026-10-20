@@ -1,4 +1,9 @@
 # bedrocktool
+
+> RyzeMCBE maintenance fork of [BedrockTool](https://github.com/bedrock-tool/bedrocktool). Includes a Linux CLI fix for Microsoft/Xbox device-code sign-in. Licensed under GPL-3.0.
+>
+> **Ubuntu installation and first login:** [docs/CLI-UBUNTU.md](docs/CLI-UBUNTU.md). Builds and releases of this fork require successful CI validation. The GitHub source includes upstream encrypted files; full parity with upstream binaries is not yet verified.
+
 a minecraft bedrock proxy that can among other things save worlds from servers
 
 <br/>
