@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"sync/atomic"
 
@@ -71,6 +72,9 @@ func (a *authSrv) SetHandler(handler auth.AuthCodeHandler) (err error) {
 func (a *authSrv) Login(ctx context.Context, conf *auth.Config, name string) (err error) {
 	if conf == nil {
 		conf = &auth.AndroidConfig
+	}
+	if a.handler == nil {
+		return fmt.Errorf("Microsoft sign-in requires an authentication code handler")
 	}
 	liveToken, err := conf.RequestLiveTokenContext(ctx, a.handler)
 	if err != nil {
